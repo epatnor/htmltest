@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Labels</title>
+    <style>
+        /* Reset some default styles for a cleaner look */
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            margin: 20px;
+            line-height: 1.5;
+        }
+
+        /* General label styling (adjusted for vertical centering) */
+        .label {
+            display: inline-flex; /* Use flexbox for centering */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            padding: .2em .6em; /* Equal top and bottom padding */
+            font-size: 75%;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            border-radius: .25em;
+            box-sizing: border-box;
+        }
+
+        /* Green labels (e.g., "Patrik Nordlund", "Tomas Andersson") */
+        .label-success {
+            background-color: #5cb85c; /* Green color for success labels */
+        }
+
+        /* Blue label (e.g., "Taggar") */
+        .label-primary {
+            background-color: #337AB7; /* Blue color matching the original Taggar */
+        }
+
+        /* Default label (e.g., "WSUS") */
+        .label-default {
+            background-color: #777; /* Gray color for default labels */
+        }
+
+        /* Add spacing between labels */
+        .label + .label {
+            margin-left: 5px;
+        }
+
+        /* Styling for the section heading */
+        h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        /* Add spacing between sections */
+        .section {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h3>Contacts</h3>
+        <span class="label label-success">Tyrek Wallstein</span>
+        <span class="label label-success">Zodiak Rathnaul</span>
+    </div>
+    <div class="section">
+        <span class="label label-primary">Tags</span>
+    </div>
+    <div class="section">
+        <span class="label label-default">Rocket</span>
+    </div>
+</body>
+</html>
