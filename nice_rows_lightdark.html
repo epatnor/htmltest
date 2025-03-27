@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Rows and Document Management Introduction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Define color variables for light and dark themes */
+        :root {
+            --bg-color: #f8f9fa; /* Light background */
+            --text-color: #212529; /* Dark text */
+            --heading-color: #000;
+            --link-color: #007bff;
+            --muted-text-color: #6c757d;
+            --border-color: #dee2e6;
+
+            --info-bg: #d9edf7;
+            --info-text: #31708f;
+            --warning-bg: #fcf8e3;
+            --warning-text: #8a6d3b;
+            --success-bg: #dff0d8;
+            --success-text: #3c763d;
+            --error-bg: #f2dede;
+            --error-text: #a94442;
+
+            --infobox-bg: white;
+            --infobox-heading: #333;
+            --infobox-text: #666;
+            --infobox-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+            /* Inline style alert colors (for reference, harder to theme) */
+            --inline-info-bg: #d9edf7;
+            --inline-info-border: #bce8f1;
+            --inline-info-text: #31708f;
+            --inline-warning-bg: #fcf8e3;
+            --inline-warning-border: #faebcc;
+            --inline-warning-text: #8a6d3b;
+            --inline-success-bg: #dff0d8;
+            --inline-success-border: #d6e9c6;
+            --inline-success-text: #3c763d;
+            --inline-error-bg: #f2dede;
+            --inline-error-border: #ebccd1;
+            --inline-error-text: #a94442;
+        }
+
+        /* Dark theme overrides */
+        body.dark-theme {
+            --bg-color: #212529; /* Dark background */
+            --text-color: #e9ecef; /* Light text */
+            --heading-color: #f8f9fa;
+            --link-color: #6cb2eb;
+            --muted-text-color: #adb5bd;
+            --border-color: #495057;
+
+            --info-bg: #1a2b38;
+            --info-text: #7cc0de;
+            --warning-bg: #3a311c;
+            --warning-text: #f0d077;
+            --success-bg: #1c3020;
+            --success-text: #87c78f;
+            --error-bg: #3b1f1f;
+            --error-text: #e08c8a;
+
+            --infobox-bg: #343a40;
+            --infobox-heading: #f8f9fa;
+            --infobox-text: #adb5bd;
+            --infobox-shadow: 0 2px 4px rgba(255,255,255,0.1);
+
+            /* Dark theme inline alert colors (these won't apply automatically due to inline styles) */
+            /* You'd need JS to update these directly or refactor to use classes */
+             --inline-info-bg: #1a2b38;
+             --inline-info-border: #2a4d65;
+             --inline-info-text: #7cc0de;
+             --inline-warning-bg: #3a311c;
+             --inline-warning-border: #5e4e2a;
+             --inline-warning-text: #f0d077;
+             --inline-success-bg: #1c3020;
+             --inline-success-border: #2e5137;
+             --inline-success-text: #87c78f;
+             --inline-error-bg: #3b1f1f;
+             --inline-error-border: #613333;
+             --inline-error-text: #e08c8a;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--bg-color); /* Use variable */
+            color: var(--text-color);         /* Use variable */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        h1 {
+            color: var(--heading-color);
+        }
+
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #theme-toggle {
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            background-color: var(--infobox-bg); /* Use a theme-aware background */
+            color: var(--text-color); /* Use theme text color */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        #theme-toggle:hover {
+             opacity: 0.8;
+        }
+
+        /* --- Alert Styles using Variables --- */
+        .alert {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            border-radius: 3px;
+            font-size: 14px;
+            border: 1px solid transparent; /* Add base border */
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .alert-icon {
+            margin-right: 8px;
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .alert-text {
+            font-weight: normal;
+        }
+
+        .alert.info {
+            background-color: var(--info-bg);
+            color: var(--info-text);
+            border-color: var(--info-text); /* Add subtle border */
+        }
+
+        .alert.warning {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            border-color: var(--warning-text);
+        }
+
+        .alert.success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-text);
+        }
+
+        .alert.error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-text);
+        }
+
+        /* --- Info Box Styles using Variables --- */
+        .info-box {
+            width: 360px;
+            background: var(--infobox-bg);
+            border-radius: 6px;
+            box-shadow: var(--infobox-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-top: 25px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-content {
+            padding: 10px 12px;
+        }
+
+        .info-content h2 {
+            margin: 0 0 6px;
+            color: var(--infobox-heading);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .info-content p {
+            color: var(--infobox-text);
+            line-height: 1.3;
+            font-size: 13px;
+            margin: 0;
+            transition: color 0.3s;
+        }
+
+        /* --- Inline Styled Alerts (NOTE: These won't automatically theme) --- */
+        /* Keeping original structure, but CSS variables won't affect inline styles */
+        /* Consider refactoring these to use classes like the FontAwesome ones */
+        .inline-alert { /* Example class if you refactor */
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            border-radius: 5px;
+            font-family: arial, sans-serif;
+            font-size: 14px;
+            margin-bottom: 1em; /* Added margin like paragraphs */
+        }
+        .inline-alert-icon {
+             margin-right: 10px;
+             font-size: 18px;
+        }
+        /* Add specific classes for inline types if refactoring */
+        .inline-alert.info {
+            background-color: var(--inline-info-bg);
+            border: 1px solid var(--inline-info-border);
+            color: var(--inline-info-text);
+        }
+         /* etc. for warning, success, error */
+
+    </style>
+</head>
+<body>
+
+    <!-- Theme Switch Button -->
+    <div class="theme-switch-wrapper">
+        <button id="theme-toggle">Switch Theme</button>
+    </div>
+
+    <h1>Introduktion till Dokumenthantering</h1>
+    <p>
+        Dokumenthantering innebär systematisk organisering, lagring, återhämtning och hantering av dokument inom en organisation. Effektiv dokumenthantering säkerställer att information är lättillgänglig, säker och effektivt använd, vilket förbättrar produktiviteten och uppfyller juridiska standarder. Här är hur du kan interagera med dokument i vårt system:
+    </p>
+    <p>
+        Du har möjlighet att ladda upp olika dokumentformat till vårt molnlagring. Detta säkrar inte bara dina dokument utan gör dem också tillgängliga var som helst, när som helst, vilket underlättar distansarbete och samarbete. Nedladdning av Dokument: På samma sätt, när du behöver arbeta offline eller dela dokument utanför systemet, kan du ladda ner dem till din lokala enhet. Se till att du är ansluten till ett säkert nätverk när du hanterar känslig information.
+    </p>
+    <div class="alert info">
+        <span class="alert-icon"><i class="fas fa-info-circle"></i></span>
+        <span class="alert-text">Info: Du kan ladda upp och ladda ner dokument.</span>
+    </div>
+    <p>
+        Innan du utför någon operation som redigering, delning eller nedladdning, måste du välja ett dokument. Detta steg är avgörande; utan det vet inte systemet vilket dokument som ska bearbetas, vilket leder till en uppmaning: "Vänligen välj ett dokument."
+    </p>
+    <div class="alert warning">
+        <span class="alert-icon"><i class="fas fa-exclamation-triangle"></i></span>
+        <span class="alert-text">Varning: Vänligen välj ett dokument.</span>
+    </div>
+    <p>
+        Efter en framgångsrik uppladdning kommer du att se ett bekräftelsemeddelande: "Din fil har laddats upp." Detta indikerar att ditt dokument nu är säkert lagrat i systemet och redo för ytterligare åtgärder eller samarbete.
+    </p>
+    <div class="alert success">
+        <span class="alert-icon"><i class="fas fa-check-circle"></i></span>
+        <span class="alert-text">Lyckat: Din fil har laddats upp.</span>
+    </div>
+    <p>
+        Om det uppstår ett problem under nedladdningsprocessen, kanske på grund av anslutningsproblem eller systemfel, kommer du att informeras med: "Nedladdning misslyckades." Detta meddelande föreslår att du kontrollerar din anslutning eller försöker igen, och om problem kvarstår, kontakta support för lösning.
+    </p>
+    <div class="alert error">
+        <span class="alert-icon"><i class="fas fa-times-circle"></i></span>
+        <span class="alert-text">Fel: Nedladdning misslyckades.</span>
+    </div>
+    <p>
+        Nedan ses ett exempel på en bild med informationstext.
+    </p>
+    <div class="info-box">
+        <div class="image-container">
+            <!-- Using a relative path to the image -->
+            <img src="science_girl2.jpg" alt="Description of the image">
+        </div>
+        <div class="info-content">
+            <h2>Robotics and You</h2>
+            <p>Take control of your home with a robot you build yourself! Affordable DIY kits are now available online, letting you craft a personalized assistant for daily tasks and a protector tailored to your needs. Enjoy the satisfaction of creating a one-of-a-kind companion that blends utility with your unique style—empower yourself with a reliable helper designed by you, for you!</p>
+        </div>
+    </div>
+
+    <!-- START: Inline styled alerts (These will NOT theme automatically) -->
+    <p>
+        Unicode version utan externa ikoner: (Dessa kommer inte att byta tema automatiskt på grund av inline-stilar)
+    </p>
+    <div style="background-color: #d9edf7; border: 1px solid #bce8f1; padding: 3px; border-radius: 5px; color: #31708f; display: flex; align-items: center; font-family: arial, sans-serif; font-size: 14px; margin-bottom: 1em;">
+        <span style="margin-right: 10px; font-size: 18px;">ⓘ</span>
+        <span>Info: Se aktuella FAQ för mer information.</span>
+    </div>
+    <div style="background-color: #fcf8e3; border: 1px solid #faebcc; padding: 3px; border-radius: 5px; color: #8a6d3b; display: flex; align-items: center; font-family: arial, sans-serif; font-size: 14px; margin-bottom: 1em;">
+        <span style="margin-right: 10px; font-size: 18px;">⚠</span>
+        <span>Varning: Vänligen välj ett dokument.</span>
+    </div>
+    <div style="background-color: #dff0d8; border: 1px solid #d6e9c6; padding: 3px; border-radius: 5px; color: #3c763d; display: flex; align-items: center; font-family: arial, sans-serif; font-size: 14px; margin-bottom: 1em;">
+        <span style="margin-right: 10px; font-size: 18px;">✔</span>
+        <span>Lyckat: Din fil har laddats upp.</span>
+    </div>
+    <div style="background-color: #f2dede; border: 1px solid #ebccd1; padding: 3px; border-radius: 5px; color: #a94442; display: flex; align-items: center; font-family: arial, sans-serif; font-size: 14px; margin-bottom: 1em;">
+        <span style="margin-right: 10px; font-size: 18px;">✖</span>
+        <span>Fel: Nedladdning misslyckades.</span>
+    </div>
+    <!-- END: Inline styled alerts -->
+
+    <p>
+        <span>→</span> <!-- Simple arrow -->
+        <span>➔</span> <!-- Thick arrow -->
+        <span>➤</span> <!-- Fancy arrow -->
+        <span>⇒</span> <!-- Double arrow -->
+        <span>➡</span> <!-- Curved arrow -->
+    </p>
+
+    <!-- Removed the Cloudflare challenge script, assuming it's not essential for this example -->
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        const currentTheme = localStorage.getItem('theme');
+
+        // Function to set the theme and update the button text
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-theme');
+                themeToggle.textContent = 'Switch to Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-theme');
+                themeToggle.textContent = 'Switch to Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+            // Note: Inline styles on the Unicode alerts won't be updated by this CSS approach.
+            // You would need specific JS to select those elements and change their .style properties,
+            // or better, refactor them to use CSS classes.
+        }
+
+        // Apply the saved theme on initial load
+        if (currentTheme) {
+            setTheme(currentTheme);
+        } else {
+            // Optional: Detect system preference if no theme is saved
+            // const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // setTheme(prefersDark ? 'dark' : 'light');
+             setTheme('light'); // Default to light if no preference saved/detected
+        }
+
+
+        // Add event listener to the button
+        themeToggle.addEventListener('click', () => {
+            // Check the current theme by looking for the class on the body
+            const isDark = body.classList.contains('dark-theme');
+            setTheme(isDark ? 'light' : 'dark'); // Toggle the theme
+        });
+
+    </script>
+</body>
+</html>
